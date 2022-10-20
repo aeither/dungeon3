@@ -1,0 +1,526 @@
+import { KaboomCtx, Vec2 } from "kaboom";
+
+export const loadKaboom = (
+  k: KaboomCtx,
+  initUserAnchor: () => Promise<void>
+) => {
+  const {
+    add,
+    pos,
+    rect,
+    color,
+    width,
+    height,
+    origin,
+    area,
+    destroy,
+    onKeyDown,
+    text,
+    go,
+    shake,
+    layers,
+    layer,
+    play,
+    wait,
+    opacity,
+    loadSpriteAtlas,
+    loadBean,
+    addLevel,
+    sprite,
+    vec2,
+    solid,
+    z,
+    rotate,
+    follow,
+    LEFT,
+    UP,
+    RIGHT,
+    DOWN,
+    onKeyPress,
+    every,
+    dt,
+    fixed,
+    isKeyPressed,
+    onKeyRelease,
+    rand,
+    loadSound,
+    loadSprite,
+    camPos,
+    camScale,
+    scale,
+    debug,
+  } = k;
+
+  /**
+   * Constants
+   */
+  const SPEED = 120;
+  const HERO = "hero2";
+  const OLDMAN = "oldman";
+  const OLDMAN2 = "oldman2";
+  const OLDMAN3 = "oldman3";
+  const SWORD = "sword2";
+
+  let HEART_STATE = 0;
+
+  /**
+   * Load Sprites and Sounds
+   */
+  loadSpriteAtlas("/assets/dungeon.png", "/assets/dungeon.json");
+  loadSprite(OLDMAN, "/assets/OldMan/SeparateAnim/Idle.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      idle: {
+        from: 0,
+        to: 3,
+      },
+    },
+  });
+  loadSprite(OLDMAN2, "/assets/OldMan2/SeparateAnim/Idle.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      idle: {
+        from: 0,
+        to: 3,
+      },
+    },
+  });
+  loadSprite(OLDMAN3, "/assets/OldMan3/SeparateAnim/Idle.png", {
+    sliceX: 4,
+    sliceY: 1,
+    anims: {
+      idle: {
+        from: 0,
+        to: 3,
+      },
+    },
+  });
+
+  // add([health()])
+
+  loadSound("coin", "/assets/sounds/coin.wav");
+  loadSound("hit", "/assets/sounds/hit.mp3");
+  loadSound("wooosh", "/assets/sounds/wooosh.mp3");
+  loadSound("kill", "/assets/sounds/kill.wav");
+
+  /**
+   * Map
+   */
+  // floor
+  addLevel(
+    [
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+    ],
+    {
+      width: 16,
+      height: 16,
+      " ": () => [sprite("floor", { frame: ~~rand(0, 8) })],
+    }
+  );
+  const map = addLevel(
+    [
+      "                                        ",
+      "tttttttttttttttttttttttttttttttttttttttt",
+      "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwd",
+      "l                    c                 r",
+      "l            c                         r",
+      "l                                       ",
+      "l   $                                  r",
+      "l      c            c                  r",
+      "l                                      r",
+      "4ttttttttttttttttttttttttttttttttttttt r",
+      "ewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww r",
+      "l                                      r",
+      "l       c                              r",
+      "l                   c                  r",
+      "l                                      r",
+      "l                            c         r",
+      "l                                      r",
+      "attttttttttttttttttttttttttttttttttttttb",
+      "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+    ],
+    {
+      width: 16,
+      height: 16,
+      $: () => [sprite("chest"), area(), solid(), { opened: false }, "chest"],
+      c: () => [sprite("coin", { anim: "spin" }), area(), "coin"],
+      a: () => [sprite("wall_botleft"), area({ width: 4 }), solid()],
+      b: () => [
+        sprite("wall_botright"),
+        area({ width: 4, offset: vec2(12, 0) }),
+        solid(),
+      ],
+      q: () => [sprite("wall_topleft"), area(), solid()],
+      4: () => [sprite("wall_topmidleft"), area(), solid()],
+      e: () => [sprite("wall_midleft"), area(), solid()],
+      d: () => [sprite("wall_topright"), area(), solid()],
+      w: () => [sprite("wall"), area(), solid()],
+      t: () => [
+        sprite("wall_top"),
+        area({ height: 4, offset: vec2(0, 12) }),
+        solid(),
+      ],
+      l: () => [sprite("wall_left"), area({ width: 4 }), solid()],
+      r: () => [
+        sprite("wall_right"),
+        area({ width: 4, offset: vec2(12, 0) }),
+        solid(),
+      ],
+    }
+  );
+
+  /**
+   * Sprites
+   */
+  const player = add([
+    pos(map.getPos(6, 6)),
+    sprite(HERO, { anim: "idle" }),
+    area({ width: 12, height: 12, offset: vec2(0, 6) }),
+    solid(),
+    origin("center"),
+  ]);
+
+  const sword = add([
+    pos(),
+    sprite(SWORD),
+    origin("bot"),
+    rotate(0),
+    follow(player, vec2(-4, 9)),
+    area(),
+    spin(),
+  ]);
+
+  const oldman = add([
+    OLDMAN,
+    sprite(OLDMAN),
+    pos(map.getPos(8, 8)),
+    origin("bot"),
+    area(),
+    solid(),
+    { msg: "Save game?" },
+  ]);
+
+  const oldman2 = add([
+    OLDMAN2,
+    sprite(OLDMAN2),
+    pos(map.getPos(8, 6)),
+    origin("bot"),
+    area(),
+    solid(),
+    { msg: "Save game?" },
+  ]);
+
+  const oldman3 = add([
+    OLDMAN3,
+    sprite(OLDMAN3),
+    pos(map.getPos(8, 4)),
+    origin("bot"),
+    area(),
+    solid(),
+    { msg: "Save game?" },
+  ]);
+
+  const ogre = add([
+    "ogre",
+    sprite("ogre"),
+    pos(map.getPos(6, 4)),
+    origin("bot"),
+    area({ scale: 0.5 }),
+    solid(),
+  ]);
+
+  const monster = add([
+    "monster",
+    sprite("monster", { anim: "run" }),
+    pos(map.getPos(4, 8)),
+    origin("bot"),
+    patrol(100),
+    area({ scale: 0.5 }),
+    solid(),
+  ]);
+
+  /**
+   * HUD
+   */
+  const counter = add([
+    text("Score: 123", { size: 18, font: "sinko" }),
+    pos(40, 4),
+    z(100),
+    fixed(),
+    { value: 123 },
+  ]);
+
+  const heart = add([
+    sprite("heart", { width: 18, height: 18 }),
+    pos(12, 4),
+    fixed(),
+  ]);
+
+  /**
+   * Logics
+   */
+  function spin() {
+    let spinning = false;
+    return {
+      angle: 0, // add type for this.angle
+      id: "spin",
+      update() {
+        if (spinning) {
+          this.angle += 1200 * dt();
+          if (this.angle >= 360) {
+            this.angle = 0;
+            spinning = false;
+          }
+        }
+      },
+      spin() {
+        spinning = true;
+      },
+    };
+  }
+  function reduceHeart() {
+    switch (heart.frame) {
+      case 0:
+        heart.frame = 1;
+        break;
+      case 1:
+        heart.frame = 2;
+        break;
+      default:
+        player.pos = vec2(2, 2);
+        counter.value = 0;
+        counter.text = "0";
+        heart.frame = 0;
+        break;
+    }
+    // if (HEART_STATE > 0) {
+    //   heart.frame = 1;
+    // } else if {
+    //   heart.frame = 2;
+    // }
+  }
+
+  function patrol(speed = 60, dir = 1) {
+    return {
+      on: (obj: any, col: any) => console.log(),
+      move: (x: any, y: any) => console.log(),
+      id: "patrol",
+      require: ["pos", "area"],
+      add() {
+        this.on("collide", (obj: any, col: any) => {
+          if (col.isLeft() || col.isRight()) {
+            dir = -dir;
+          }
+        });
+      },
+      update() {
+        this.move(speed * dir, 0);
+      },
+    };
+  }
+
+  function addDialog() {
+    const h = 160;
+    const btnText = "Yes";
+    const bg = add([
+      pos(0, height() - h),
+      rect(width(), h),
+      color(0, 0, 0),
+      z(100),
+      fixed(),
+    ]);
+    const txt = add([
+      text("", {
+        size: 18,
+      }),
+      pos(vec2(300, 400)),
+      scale(1),
+      origin("center"),
+      z(100),
+      fixed(),
+    ]);
+    const btn = add([
+      text(btnText, {
+        size: 24,
+      }),
+      pos(vec2(400, 400)),
+      area({ cursor: "pointer" }),
+      scale(1),
+      origin("center"),
+      z(100),
+      fixed(),
+    ]);
+
+    btn.onClick(() => debug.log("oh hi"));
+    bg.hidden = true;
+    txt.hidden = true;
+    btn.hidden = true;
+    return {
+      say(t: string) {
+        txt.text = t;
+        bg.hidden = false;
+        txt.hidden = false;
+        btn.hidden = false;
+      },
+      dismiss() {
+        if (!this.active()) {
+          return;
+        }
+        txt.text = "";
+        bg.hidden = true;
+        txt.hidden = true;
+        btn.hidden = true;
+      },
+      active() {
+        return !bg.hidden;
+      },
+      destroy() {
+        bg.destroy();
+        txt.destroy();
+      },
+    };
+  }
+  const dialog = addDialog();
+
+  /**
+   * on Player Collides
+   */
+  player.onCollide("ogre", async (obj, col) => {
+    play("hit");
+    reduceHeart();
+    // initUserAnchor();
+  });
+
+  player.onCollide("coin", async (obj, col) => {
+    destroy(obj);
+    play("coin");
+    counter.value += 10;
+    counter.text = `Score: ${counter.value}`;
+    // initUserAnchor();
+  });
+
+  player.onCollide("monster", async (obj, col) => {
+    if (col?.isRight()) {
+      player.moveBy(-32, 0);
+    }
+    if (col?.isLeft()) {
+      player.moveBy(32, 0);
+    }
+    if (col?.isBottom()) {
+      player.moveBy(0, -32);
+    }
+    if (col?.isTop()) {
+      player.moveBy(0, 32);
+    }
+    if (col?.displacement) play("hit");
+    reduceHeart();
+    // initUserAnchor();
+  });
+
+  // TODO: sword collide enemy
+  sword.onCollide("ogre", async (ogre) => {
+    play("kill");
+    counter.value += 100;
+    counter.text = `Score: ${counter.value}`;
+    destroy(ogre);
+    // initUserAnchor();
+  });
+
+  player.onCollide(OLDMAN, (obj) => {
+    dialog.say(obj.msg);
+  });
+
+  player.onCollide(OLDMAN2, (obj) => {
+    dialog.say(obj.msg);
+  });
+
+  player.onCollide(OLDMAN3, (obj) => {
+    dialog.say(obj.msg);
+  });
+
+  // player.onUpdate(() => {
+  //   collides("")
+  //   if (player.isColliding(ogre)) {
+  //     console.log("cllide");
+  //   }
+  // });
+
+  /**
+   * Player Controls
+   */
+
+  camScale(vec2(2));
+  player.onUpdate(() => {
+    camPos(player.pos);
+  });
+
+  onKeyPress("space", () => {
+    let interacted = false;
+    every("chest", (c) => {
+      if (player.isTouching(c)) {
+        if (c.opened) {
+          c.play("close");
+          c.opened = false;
+        } else {
+          c.play("open");
+          c.opened = true;
+        }
+        interacted = true;
+      }
+    });
+    if (!interacted) {
+      play("wooosh");
+      sword.spin();
+    }
+  });
+
+  onKeyDown("right", () => {
+    player.flipX(false);
+    sword.flipX(false);
+    player.move(SPEED, 0);
+    sword.follow.offset = vec2(-4, 9);
+  });
+
+  onKeyDown("left", () => {
+    player.flipX(true);
+    sword.flipX(true);
+    player.move(-SPEED, 0);
+    sword.follow.offset = vec2(4, 9);
+  });
+
+  onKeyDown("up", () => {
+    player.move(0, -SPEED);
+  });
+
+  onKeyDown("down", () => {
+    player.move(0, SPEED);
+  });
+
+  onKeyRelease(["left", "right", "up", "down"], () => {
+    player.play("idle");
+  });
+
+  onKeyPress(["left", "right", "up", "down"], () => {
+    dialog.dismiss();
+    player.play("run");
+  });
+};
