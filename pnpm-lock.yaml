@@ -21,14 +21,14 @@ specifiers:
   '@types/react-dom': ^18.0.6
   '@vitejs/plugin-react': ^2.1.0
   assert: ^2.0.0
-  autoprefixer: ^10.0.2
+  autoprefixer: ^10.4.12
   bs58: ^4.0.1
   crypto-browserify: ^3.12.0
   daisyui: ^2.31.0
   esbuild: '*'
   ethers: '>=5.7.0 <6.0.0'
   kaboom: ^2000.2.9
-  postcss: '>=8.3.3 <9.0.0'
+  postcss: ^8.4.18
   prettier: ^2.7.1
   prettier-plugin-tailwindcss: ^0.1.13
   react: ^18.2.0
