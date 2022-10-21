@@ -1,9 +1,6 @@
 import { KaboomCtx } from "kaboom";
 
-export const Home = (
-  k: KaboomCtx
-  // initUserAnchor: () => Promise<void>
-) => {
+export const Home = (k: KaboomCtx, hasNft: boolean) => {
   const {
     add,
     pos,
@@ -31,6 +28,8 @@ export const Home = (
     debug,
   } = k;
 
+  console.log("hasNft", hasNft);
+
   // Keep track which is the current font
   let curFont = 0;
   let curSize = 48;
@@ -52,12 +51,11 @@ export const Home = (
         btn.scale = vec2(1.2);
       } else {
         btn.scale = vec2(1);
+        cursor("default");
       }
     });
   }
 
   addButton("Start", center().x, center().y - 120, () => go("game"));
-  addButton("Quit", center().x, center().y, () => debug.log("bye"));
-
-  onUpdate(() => cursor("default"));
+  addButton("Quit", center().x, center().y, () => debug.log("quit"));
 };

@@ -8,58 +8,65 @@ import { NFTDrop, ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
 import kaboom from "kaboom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dungeon3, IDL } from "./utils/idl";
+import {
+  MINT_ADDRESS,
+  PROGRAM_ID,
+  TW_COLLECTION_ADDRESS,
+} from "@/utils/constants";
+import useCustomHooks from "./hooks/hooks";
 
 export default function Home() {
   const wallet = useWallet();
-  const PROGRAM_ID = new PublicKey(
-    "6gT9vcnHzJLT8bSbnYskzQqZ6WhYUKsVdQgCPUkxmCNo"
-  );
-  const TW_COLLECTION_ADDRESS = "E3Gad5EmcveNHhJrYBCFLixDansXABzakTfcMFRGRVCc";
-  const MINT_ADDRESS = "2HQ6DKR4naR6jEs7driTnRvcWwxArogTaCsf4vS5eH93";
-  const [program, setProgram] = useState<Program<Dungeon3>>();
-  const [nftDrop, setNftDrop] = useState<NFTDrop>();
-  const [hasNft, setHasNft] = useState(false);
+  const { program, hasNft } = useCustomHooks();
+  // const PROGRAM_ID = new PublicKey(
+  //   "6gT9vcnHzJLT8bSbnYskzQqZ6WhYUKsVdQgCPUkxmCNo"
+  // );
+  // const TW_COLLECTION_ADDRESS = "E3Gad5EmcveNHhJrYBCFLixDansXABzakTfcMFRGRVCc";
+  // const MINT_ADDRESS = "2HQ6DKR4naR6jEs7driTnRvcWwxArogTaCsf4vS5eH93";
+  // const [program, setProgram] = useState<Program<Dungeon3>>();
+  // const [nftDrop, setNftDrop] = useState<NFTDrop>();
+  // const [hasNft, setHasNft] = useState(false);
 
-  const sdk = useMemo(() => {
-    if (wallet.connected) {
-      const sdk = ThirdwebSDK.fromNetwork("devnet");
-      sdk.wallet.connect(wallet);
-      return sdk;
-    }
-  }, [wallet]);
+  // const sdk = useMemo(() => {
+  //   if (wallet.connected) {
+  //     const sdk = ThirdwebSDK.fromNetwork("devnet");
+  //     sdk.wallet.connect(wallet);
+  //     return sdk;
+  //   }
+  // }, [wallet]);
 
-  useEffect(() => {
-    load();
+  // useEffect(() => {
+  //   load();
 
-    async function load() {
-      if (sdk) {
-        const { program }: { program: Program<Dungeon3> } =
-          (await sdk.getProgram(PROGRAM_ID.toBase58(), IDL)) as any;
-        setProgram(program);
+  //   async function load() {
+  //     if (sdk) {
+  //       const { program }: { program: Program<Dungeon3> } =
+  //         (await sdk.getProgram(PROGRAM_ID.toBase58(), IDL)) as any;
+  //       setProgram(program);
 
-        const nftDrop = await sdk.getNFTDrop(TW_COLLECTION_ADDRESS);
-        setNftDrop(nftDrop);
-      }
-    }
-  }, [sdk]);
+  //       const nftDrop = await sdk.getNFTDrop(TW_COLLECTION_ADDRESS);
+  //       setNftDrop(nftDrop);
+  //     }
+  //   }
+  // }, [sdk]);
 
-  const getHasNft = async () => {
-    try {
-      if (!nftDrop || !wallet.publicKey) {
-      } else {
-        console.log("nftDrop.publicKey", nftDrop.publicKey.toBase58());
+  // const getHasNft = async () => {
+  //   try {
+  //     if (!nftDrop || !wallet.publicKey) {
+  //     } else {
+  //       console.log("nftDrop.publicKey", nftDrop.publicKey.toBase58());
 
-        const balance = await nftDrop.balance(MINT_ADDRESS);
-        console.log(balance);
-        setHasNft(balance > 0 ? true : false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    getHasNft();
-  }, [wallet]);
+  //       const balance = await nftDrop.balance(MINT_ADDRESS);
+  //       console.log(balance);
+  //       setHasNft(balance > 0 ? true : false);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getHasNft();
+  // }, [wallet]);
 
   const initUserAnchor = async () => {
     try {
@@ -121,7 +128,7 @@ export default function Home() {
       background: [0, 0, 0],
     });
 
-    loadKaboom(k);
+    loadKaboom(k, hasNft);
     // loadKaboom(k, initUserAnchor);
   }, []);
 

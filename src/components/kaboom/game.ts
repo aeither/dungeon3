@@ -1,5 +1,12 @@
 import { KaboomCtx } from "kaboom";
-import { OLDMAN, OLDMAN2, OLDMAN3, HERO, SPEED, SWORD } from "./constants";
+import {
+  OLDMAN,
+  OLDMAN2,
+  OLDMAN3,
+  HERO,
+  SPEED,
+  SWORD,
+} from "../../utils/constants";
 
 export const Game = (
   k: KaboomCtx
