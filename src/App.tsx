@@ -1,29 +1,25 @@
-import {
-  AnchorProvider,
-  BN,
-  Idl,
-  Program,
-  Wallet,
-} from "@project-serum/anchor";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { loadKaboom } from "@/components/kaboom";
+import { BN, Program } from "@project-serum/anchor";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { PublicKey } from "@solana/web3.js";
-import { ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
+import { NFTDrop, ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
 import kaboom from "kaboom";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Dungeon3, IDL } from "./utils/idl";
-import { loadKaboom } from "./utils/kaboom";
 
 export default function Home() {
   const wallet = useWallet();
-  const { connection } = useConnection();
   const PROGRAM_ID = new PublicKey(
     "6gT9vcnHzJLT8bSbnYskzQqZ6WhYUKsVdQgCPUkxmCNo"
   );
-  const TW_PROGRAM_ADDRESS = "E3Gad5EmcveNHhJrYBCFLixDansXABzakTfcMFRGRVCc";
+  const TW_COLLECTION_ADDRESS = "E3Gad5EmcveNHhJrYBCFLixDansXABzakTfcMFRGRVCc";
+  const MINT_ADDRESS = "2HQ6DKR4naR6jEs7driTnRvcWwxArogTaCsf4vS5eH93";
+  const [program, setProgram] = useState<Program<Dungeon3>>();
+  const [nftDrop, setNftDrop] = useState<NFTDrop>();
+  const [hasNft, setHasNft] = useState(false);
 
-  // TypeError: Class extends value undefined is not a constructor or null
   const sdk = useMemo(() => {
     if (wallet.connected) {
       const sdk = ThirdwebSDK.fromNetwork("devnet");
@@ -32,16 +28,38 @@ export default function Home() {
     }
   }, [wallet]);
 
-  const provider = useMemo(() => {
-    const aWallet = wallet as any as Wallet;
-    const provider = new AnchorProvider(connection, aWallet, {});
-    return provider;
-  }, [wallet, connection]);
+  useEffect(() => {
+    load();
 
-  const program: Program<Dungeon3> | undefined = useMemo(
-    () => new Program(IDL as Idl, PROGRAM_ID, provider) as any,
-    [wallet, connection]
-  );
+    async function load() {
+      if (sdk) {
+        const { program }: { program: Program<Dungeon3> } =
+          (await sdk.getProgram(PROGRAM_ID.toBase58(), IDL)) as any;
+        setProgram(program);
+
+        const nftDrop = await sdk.getNFTDrop(TW_COLLECTION_ADDRESS);
+        setNftDrop(nftDrop);
+      }
+    }
+  }, [sdk]);
+
+  const getHasNft = async () => {
+    try {
+      if (!nftDrop || !wallet.publicKey) {
+      } else {
+        console.log("nftDrop.publicKey", nftDrop.publicKey.toBase58());
+
+        const balance = await nftDrop.balance(MINT_ADDRESS);
+        console.log(balance);
+        setHasNft(balance > 0 ? true : false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getHasNft();
+  }, [wallet]);
 
   const initUserAnchor = async () => {
     try {
@@ -100,11 +118,11 @@ export default function Home() {
       stretch: true,
       letterbox: true,
       canvas: canvasRef.current,
-      // clearColor: [0, 0, 0],
       background: [0, 0, 0],
     });
 
-    loadKaboom(k, initUserAnchor);
+    loadKaboom(k);
+    // loadKaboom(k, initUserAnchor);
   }, []);
 
   return (
@@ -113,8 +131,8 @@ export default function Home() {
         <div className="self-center">
           <h2 className="font-bold">Dungeon3</h2>
         </div>
-        <button onClick={initUserAnchor}>init </button>
-        <button onClick={setUserAnchor}>set </button>
+        <button onClick={initUserAnchor}>init</button>
+        <button onClick={setUserAnchor}>set</button>
         <WalletMultiButton className="btn btn-primary" />
       </div>
       <canvas

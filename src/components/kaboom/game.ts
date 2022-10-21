@@ -1,8 +1,9 @@
-import { KaboomCtx, Vec2 } from "kaboom";
+import { KaboomCtx } from "kaboom";
+import { OLDMAN, OLDMAN2, OLDMAN3, HERO, SPEED, SWORD } from "./constants";
 
-export const loadKaboom = (
-  k: KaboomCtx,
-  initUserAnchor: () => Promise<void>
+export const Game = (
+  k: KaboomCtx
+  // initUserAnchor: () => Promise<void>
 ) => {
   const {
     add,
@@ -49,61 +50,8 @@ export const loadKaboom = (
     camScale,
     scale,
     debug,
+    scene,
   } = k;
-
-  /**
-   * Constants
-   */
-  const SPEED = 120;
-  const HERO = "hero2";
-  const OLDMAN = "oldman";
-  const OLDMAN2 = "oldman2";
-  const OLDMAN3 = "oldman3";
-  const SWORD = "sword2";
-
-  let HEART_STATE = 0;
-
-  /**
-   * Load Sprites and Sounds
-   */
-  loadSpriteAtlas("/assets/dungeon.png", "/assets/dungeon.json");
-  loadSprite(OLDMAN, "/assets/OldMan/SeparateAnim/Idle.png", {
-    sliceX: 4,
-    sliceY: 1,
-    anims: {
-      idle: {
-        from: 0,
-        to: 3,
-      },
-    },
-  });
-  loadSprite(OLDMAN2, "/assets/OldMan2/SeparateAnim/Idle.png", {
-    sliceX: 4,
-    sliceY: 1,
-    anims: {
-      idle: {
-        from: 0,
-        to: 3,
-      },
-    },
-  });
-  loadSprite(OLDMAN3, "/assets/OldMan3/SeparateAnim/Idle.png", {
-    sliceX: 4,
-    sliceY: 1,
-    anims: {
-      idle: {
-        from: 0,
-        to: 3,
-      },
-    },
-  });
-
-  // add([health()])
-
-  loadSound("coin", "/assets/sounds/coin.wav");
-  loadSound("hit", "/assets/sounds/hit.mp3");
-  loadSound("wooosh", "/assets/sounds/wooosh.mp3");
-  loadSound("kill", "/assets/sounds/kill.wav");
 
   /**
    * Map
@@ -262,11 +210,11 @@ export const loadKaboom = (
    * HUD
    */
   const counter = add([
-    text("Score: 123", { size: 18, font: "sinko" }),
+    text("Score: 0", { size: 18, font: "sinko" }),
     pos(40, 4),
     z(100),
     fixed(),
-    { value: 123 },
+    { value: 0 },
   ]);
 
   const heart = add([
