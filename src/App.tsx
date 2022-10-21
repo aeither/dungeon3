@@ -81,7 +81,7 @@ export default function Home() {
       background: [0, 0, 0],
     });
 
-    loadKaboom(k, hasNft);
+    loadKaboom(k);
     // loadKaboom(k, initUserAnchor);
   }, []);
 

@@ -1,11 +1,11 @@
+import "@solana/wallet-adapter-react-ui/styles.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { ContextProvider } from "./contexts/ContextProvider";
-import "./styles/globals.css";
-import "@solana/wallet-adapter-react-ui/styles.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MintPage from "./MintPage";
+import "./styles/globals.css";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +21,6 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ContextProvider>
-      {/* <App /> */}
       <RouterProvider router={router} />
     </ContextProvider>
   </React.StrictMode>

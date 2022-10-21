@@ -1,5 +1,4 @@
 import {
-  MINT_ADDRESS,
   NETWORK_URL,
   PROGRAM_ID,
   TW_COLLECTION_ADDRESS,
@@ -40,21 +39,23 @@ export default function useCustomHooks() {
     }
   }, [sdk]);
 
-  const getHasNft = async () => {
-    try {
-      if (!nftDrop || !wallet.publicKey) {
-      } else {
-        const balance = await nftDrop.balance(MINT_ADDRESS);
-        console.log("balance: ", balance);
-        setHasNft(balance > 0 ? true : false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
   useEffect(() => {
     getHasNft();
-  }, [wallet]);
+
+    async function getHasNft() {
+      try {
+        if (wallet.publicKey !== null && nftDrop !== undefined) {
+          const nfts = await nftDrop.getAllClaimed();
+          const userAddress = wallet.publicKey.toBase58();
+          const hasNFT = nfts.some((nft) => nft.owner === userAddress);
+          if (hasNFT === undefined) return;
+          setHasNft(hasNFT);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [wallet, nftDrop]);
 
   return {
     program,

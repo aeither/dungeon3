@@ -1,6 +1,6 @@
 import { KaboomCtx } from "kaboom";
 
-export const Home = (k: KaboomCtx, hasNft: boolean) => {
+export const Home = (k: KaboomCtx) => {
   const {
     add,
     pos,
@@ -27,8 +27,6 @@ export const Home = (k: KaboomCtx, hasNft: boolean) => {
     cursor,
     debug,
   } = k;
-
-  console.log("hasNft", hasNft);
 
   // Keep track which is the current font
   let curFont = 0;

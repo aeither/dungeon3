@@ -4,8 +4,7 @@ import { Game } from "./game";
 import { OLDMAN, OLDMAN2, OLDMAN3 } from "../../utils/constants";
 
 export const loadKaboom = (
-  k: KaboomCtx,
-  hasNft: boolean
+  k: KaboomCtx
   // initUserAnchor: () => Promise<void>
 ) => {
   const { go, loadSpriteAtlas, loadSound, loadSprite, center, scene } = k;
@@ -52,7 +51,7 @@ export const loadKaboom = (
   loadSound("wooosh", "/assets/sounds/wooosh.mp3");
   loadSound("kill", "/assets/sounds/kill.wav");
 
-  scene("home", () => Home(k, hasNft));
+  scene("home", () => Home(k));
 
   scene("game", () => Game(k));
 
