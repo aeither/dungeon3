@@ -1,72 +1,25 @@
 import { loadKaboom } from "@/components/kaboom";
-import { BN, Program } from "@project-serum/anchor";
+import { PROGRAM_ID } from "@/utils/constants";
+import { BN } from "@project-serum/anchor";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { PublicKey } from "@solana/web3.js";
-import { NFTDrop, ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
 import kaboom from "kaboom";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Dungeon3, IDL } from "./utils/idl";
-import {
-  MINT_ADDRESS,
-  PROGRAM_ID,
-  TW_COLLECTION_ADDRESS,
-} from "@/utils/constants";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import useCustomHooks from "./hooks/hooks";
 
 export default function Home() {
   const wallet = useWallet();
   const { program, hasNft } = useCustomHooks();
-  // const PROGRAM_ID = new PublicKey(
-  //   "6gT9vcnHzJLT8bSbnYskzQqZ6WhYUKsVdQgCPUkxmCNo"
-  // );
-  // const TW_COLLECTION_ADDRESS = "E3Gad5EmcveNHhJrYBCFLixDansXABzakTfcMFRGRVCc";
-  // const MINT_ADDRESS = "2HQ6DKR4naR6jEs7driTnRvcWwxArogTaCsf4vS5eH93";
-  // const [program, setProgram] = useState<Program<Dungeon3>>();
-  // const [nftDrop, setNftDrop] = useState<NFTDrop>();
-  // const [hasNft, setHasNft] = useState(false);
+  const navigate = useNavigate();
 
-  // const sdk = useMemo(() => {
-  //   if (wallet.connected) {
-  //     const sdk = ThirdwebSDK.fromNetwork("devnet");
-  //     sdk.wallet.connect(wallet);
-  //     return sdk;
-  //   }
-  // }, [wallet]);
-
-  // useEffect(() => {
-  //   load();
-
-  //   async function load() {
-  //     if (sdk) {
-  //       const { program }: { program: Program<Dungeon3> } =
-  //         (await sdk.getProgram(PROGRAM_ID.toBase58(), IDL)) as any;
-  //       setProgram(program);
-
-  //       const nftDrop = await sdk.getNFTDrop(TW_COLLECTION_ADDRESS);
-  //       setNftDrop(nftDrop);
-  //     }
-  //   }
-  // }, [sdk]);
-
-  // const getHasNft = async () => {
-  //   try {
-  //     if (!nftDrop || !wallet.publicKey) {
-  //     } else {
-  //       console.log("nftDrop.publicKey", nftDrop.publicKey.toBase58());
-
-  //       const balance = await nftDrop.balance(MINT_ADDRESS);
-  //       console.log(balance);
-  //       setHasNft(balance > 0 ? true : false);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   getHasNft();
-  // }, [wallet]);
+  useEffect(() => {
+    if (!hasNft) {
+      navigate("/mint");
+    }
+  }, [wallet]);
 
   const initUserAnchor = async () => {
     try {

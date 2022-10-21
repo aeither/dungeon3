@@ -9,8 +9,6 @@ export const HERO = "hero2";
 export const SWORD = "sword2";
 
 /** Solana */
-console.log("env: ", import.meta.env.v);
-
 export const PROGRAM_ID = new PublicKey(import.meta.env.VITE_PROGRAM_ID || "");
 export const TW_COLLECTION_ADDRESS =
   import.meta.env.VITE_TW_COLLECTION_ADDRESS || "";
