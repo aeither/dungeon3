@@ -12,6 +12,9 @@ import { NFTDrop, ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
 import { useEffect, useMemo, useState } from "react";
 import useTw from "./tw";
 
+export type SetUserAnchor = (score: number, heart: number) =>
+  Promise<string | undefined>;
+
 export default function useProgram() {
   const wallet = useWallet();
   const { sdk } = useTw();
@@ -45,12 +48,14 @@ export default function useProgram() {
         })
         .rpc();
       console.log(`Use 'solana confirm -v ${txHash}' to see the logs`);
+      return txHash;
     } catch (error) {
       console.error(error);
+      return undefined;
     }
   };
 
-  const setUserAnchor = async () => {
+  const setUserAnchor = async (score: number, heart: number) => {
     try {
       if (!program || !wallet.publicKey) return;
 
@@ -61,15 +66,17 @@ export default function useProgram() {
 
       // Send transaction
       const txHash = await program.methods
-        .setUser(new BN(12000), 2, 0)
+        .setUser(new BN(score), 0, heart)
         .accounts({
           userAccount: userAccountAddress,
           authority: wallet.publicKey,
         })
         .rpc();
       console.log(`Use 'solana confirm -v ${txHash}' to see the logs`);
+      return txHash;
     } catch (error) {
       console.error(error);
+      return undefined;
     }
   };
 

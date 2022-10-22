@@ -2,11 +2,9 @@ import { KaboomCtx } from "kaboom";
 import { Home } from "./home";
 import { Game } from "./game";
 import { OLDMAN, OLDMAN2, OLDMAN3 } from "../../utils/constants";
+import { SetUserAnchor } from "@/hooks/anchor";
 
-export const loadKaboom = (
-  k: KaboomCtx
-  // initUserAnchor: () => Promise<void>
-) => {
+export const loadKaboom = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const { go, loadSpriteAtlas, loadSound, loadSprite, center, scene } = k;
 
   /**
@@ -53,7 +51,7 @@ export const loadKaboom = (
 
   scene("home", () => Home(k));
 
-  scene("game", () => Game(k));
+  scene("game", () => Game(k, setUserAnchor));
 
   function start() {
     // Start with the "game" scene, with initial parameters

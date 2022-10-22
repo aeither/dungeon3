@@ -7,11 +7,9 @@ import {
   SPEED,
   SWORD,
 } from "../../utils/constants";
+import { SetUserAnchor } from "@/hooks/anchor";
 
-export const Game = (
-  k: KaboomCtx
-  // initUserAnchor: () => Promise<void>
-) => {
+export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const {
     add,
     pos,
@@ -58,6 +56,7 @@ export const Game = (
     scale,
     debug,
     scene,
+    cursor,
   } = k;
 
   /**
@@ -171,7 +170,7 @@ export const Game = (
     origin("bot"),
     area(),
     solid(),
-    { msg: "Save game?" },
+    { msg: "Save progress?" },
   ]);
 
   const oldman2 = add([
@@ -181,7 +180,7 @@ export const Game = (
     origin("bot"),
     area(),
     solid(),
-    { msg: "Save game?" },
+    { msg: "Save progress?" },
   ]);
 
   const oldman3 = add([
@@ -191,7 +190,7 @@ export const Game = (
     origin("bot"),
     area(),
     solid(),
-    { msg: "Save game?" },
+    { msg: "Save progress?" },
   ]);
 
   const ogre = add([
@@ -320,7 +319,19 @@ export const Game = (
       fixed(),
     ]);
 
-    btn.onClick(() => debug.log("oh hi"));
+    btn.onUpdate(() => {
+      if (btn.isHovering()) {
+        btn.scale = vec2(1.2);
+      } else {
+        btn.scale = vec2(1);
+        cursor("default");
+      }
+    });
+
+    btn.onClick(() => {
+      console.log("set: ", counter.value, heart.frame),
+        setUserAnchor(counter.value, heart.frame);
+    });
     bg.hidden = true;
     txt.hidden = true;
     btn.hidden = true;

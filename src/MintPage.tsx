@@ -3,12 +3,14 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useProgram from "./hooks/anchor";
 import useTw from "./hooks/tw";
 
 export default function MintPage() {
   const wallet = useWallet();
   const navigate = useNavigate();
   const { nftDrop } = useTw();
+  const { initUserAnchor } = useProgram();
 
   useEffect(() => {
     async function f() {
@@ -26,12 +28,19 @@ export default function MintPage() {
 
   const mint = async () => {
     if (!nftDrop || !wallet.publicKey) return;
-    const nfts = await nftDrop.getAll();
-    console.log(nfts);
+    try {
+      const nfts = await nftDrop.getAll();
+      console.log(nfts);
 
-    const claimedAddresses = await nftDrop.claim(1);
-    console.log("Claimed NFT to: ", claimedAddresses[0]);
-    navigate("/");
+      const claimedAddresses = await nftDrop.claim(1);
+      console.log("Claimed NFT to: ", claimedAddresses[0]);
+
+      await initUserAnchor();
+
+      navigate("/");
+    } catch (error) {
+      alert("something went wront :(");
+    }
   };
 
   return (

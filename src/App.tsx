@@ -38,7 +38,7 @@ export default function Home() {
       background: [0, 0, 0],
     });
 
-    loadKaboom(k);
+    loadKaboom(k, setUserAnchor);
   }, []);
 
   return (
@@ -48,7 +48,7 @@ export default function Home() {
           <h2 className="font-bold">Dungeon3</h2>
         </div>
         <button onClick={initUserAnchor}>init</button>
-        <button onClick={setUserAnchor}>set</button>
+        <button onClick={() => setUserAnchor(123, 1)}>set</button>
         <WalletMultiButton className="btn btn-primary" />
       </div>
       <canvas
