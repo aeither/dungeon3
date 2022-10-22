@@ -3,12 +3,12 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useCustomHooks from "./hooks/hooks";
+import useTw from "./hooks/tw";
 
 export default function MintPage() {
   const wallet = useWallet();
   const navigate = useNavigate();
-  const { nftDrop } = useCustomHooks();
+  const { nftDrop } = useTw();
 
   useEffect(() => {
     async function f() {

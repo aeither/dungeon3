@@ -8,63 +8,20 @@ import { PublicKey } from "@solana/web3.js";
 import kaboom from "kaboom";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import useCustomHooks from "./hooks/hooks";
+import useProgram from "./hooks/anchor";
+import useTw from "./hooks/tw";
 
 export default function Home() {
   const wallet = useWallet();
-  const { program, hasNft } = useCustomHooks();
+  const { hasNft } = useTw();
+  const { initUserAnchor, setUserAnchor } = useProgram();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!hasNft) {
-      navigate("/mint");
-    }
-  }, [wallet]);
-
-  const initUserAnchor = async () => {
-    try {
-      if (!program || !wallet.publicKey) return;
-
-      const [userAccountAddress] = await PublicKey.findProgramAddress(
-        [Buffer.from("user"), wallet.publicKey.toBuffer()],
-        PROGRAM_ID
-      );
-
-      // Send transaction
-      const txHash = await program.methods
-        .initUser()
-        .accounts({
-          newUserAccount: userAccountAddress,
-        })
-        .rpc();
-      console.log(`Use 'solana confirm -v ${txHash}' to see the logs`);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const setUserAnchor = async () => {
-    try {
-      if (!program || !wallet.publicKey) return;
-
-      const [userAccountAddress] = await PublicKey.findProgramAddress(
-        [Buffer.from("user"), wallet.publicKey.toBuffer()],
-        PROGRAM_ID
-      );
-
-      // Send transaction
-      const txHash = await program.methods
-        .setUser(new BN(12000), 2, 0)
-        .accounts({
-          userAccount: userAccountAddress,
-          authority: wallet.publicKey,
-        })
-        .rpc();
-      console.log(`Use 'solana confirm -v ${txHash}' to see the logs`);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // useEffect(() => {
+  //   if (!hasNft) {
+  //     navigate("/mint");
+  //   }
+  // }, [wallet]);
 
   const canvasRef = useRef(
     document.getElementById("canvas") as HTMLCanvasElement
@@ -82,7 +39,6 @@ export default function Home() {
     });
 
     loadKaboom(k);
-    // loadKaboom(k, initUserAnchor);
   }, []);
 
   return (
