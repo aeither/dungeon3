@@ -261,17 +261,12 @@ export const Game = (
         heart.frame = 2;
         break;
       default:
-        player.pos = vec2(2, 2);
+        go("home");
         counter.value = 0;
         counter.text = "0";
         heart.frame = 0;
         break;
     }
-    // if (HEART_STATE > 0) {
-    //   heart.frame = 1;
-    // } else if {
-    //   heart.frame = 2;
-    // }
   }
 
   function patrol(speed = 60, dir = 1) {

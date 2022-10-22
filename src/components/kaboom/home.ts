@@ -28,14 +28,9 @@ export const Home = (k: KaboomCtx) => {
     debug,
   } = k;
 
-  // Keep track which is the current font
-  let curFont = 0;
-  let curSize = 48;
-  const pad = 24;
-
   function addButton(txt: string, px: number, py: number, f: any) {
     const btn = add([
-      text(txt),
+      text(txt, { size: 48 }),
       pos(px, py),
       area({ cursor: "pointer" }),
       scale(1),
@@ -55,5 +50,5 @@ export const Home = (k: KaboomCtx) => {
   }
 
   addButton("Start", center().x, center().y - 120, () => go("game"));
-  addButton("Quit", center().x, center().y, () => debug.log("quit"));
+  addButton("Settings", center().x, center().y, () => debug.log("settings"));
 };
