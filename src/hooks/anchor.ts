@@ -12,8 +12,10 @@ import { NFTDrop, ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
 import { useEffect, useMemo, useState } from "react";
 import useTw from "./tw";
 
-export type SetUserAnchor = (score: number, heart: number) =>
-  Promise<string | undefined>;
+export type SetUserAnchor = (
+  score: number,
+  health: number
+) => Promise<string | undefined>;
 
 export default function useProgram() {
   const wallet = useWallet();
@@ -55,7 +57,7 @@ export default function useProgram() {
     }
   };
 
-  const setUserAnchor = async (score: number, heart: number) => {
+  const setUserAnchor = async (score: number, health: number) => {
     try {
       if (!program || !wallet.publicKey) return;
 
@@ -66,7 +68,7 @@ export default function useProgram() {
 
       // Send transaction
       const txHash = await program.methods
-        .setUser(new BN(score), 0, heart)
+        .setUser(new BN(score), 0, health)
         .accounts({
           userAccount: userAccountAddress,
           authority: wallet.publicKey,

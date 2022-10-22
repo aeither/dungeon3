@@ -223,8 +223,8 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     { value: 0 },
   ]);
 
-  const heart = add([
-    sprite("heart", { width: 18, height: 18 }),
+  const health = add([
+    sprite("health", { width: 18, height: 18 }),
     pos(12, 4),
     fixed(),
   ]);
@@ -251,19 +251,19 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
       },
     };
   }
-  function reduceHeart() {
-    switch (heart.frame) {
+  function reduceHealth() {
+    switch (health.frame) {
       case 0:
-        heart.frame = 1;
+        health.frame = 1;
         break;
       case 1:
-        heart.frame = 2;
+        health.frame = 2;
         break;
       default:
         go("home");
         counter.value = 0;
         counter.text = "0";
-        heart.frame = 0;
+        health.frame = 0;
         break;
     }
   }
@@ -329,8 +329,8 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     });
 
     btn.onClick(() => {
-      console.log("set: ", counter.value, heart.frame),
-        setUserAnchor(counter.value, heart.frame);
+      console.log("set: ", counter.value, health.frame),
+        setUserAnchor(counter.value, health.frame);
     });
     bg.hidden = true;
     txt.hidden = true;
@@ -367,7 +367,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
    */
   player.onCollide("ogre", async (obj, col) => {
     play("hit");
-    reduceHeart();
+    reduceHealth();
     // initUserAnchor();
   });
 
@@ -393,7 +393,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
       player.moveBy(0, 32);
     }
     if (col?.displacement) play("hit");
-    reduceHeart();
+    reduceHealth();
     // initUserAnchor();
   });
 
