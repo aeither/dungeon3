@@ -83,6 +83,14 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
       "                                        ",
       "                                        ",
       "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
+      "                                        ",
     ],
     {
       width: 16,
@@ -95,19 +103,27 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
       "                                        ",
       "tttttttttttttttttttttttttttttttttttttttt",
       "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwd",
-      "l                    c                 r",
-      "l            c                         r",
-      "l                                       ",
-      "l   $                                  r",
-      "l      c            c                  r",
       "l                                      r",
+      "l    $                                 r",
+      "l                                      r",
+      "l      ccc    ccc      ccc       ccc   r",
+      "l                                      r",
+      "l  ccc            ccc       ccc        r",
       "4ttttttttttttttttttttttttttttttttttttt r",
       "ewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww r",
       "l                                      r",
-      "l       c                              r",
-      "l                   c                  r",
+      "l                      c               r",
+      "l               ccccccccc              r",
+      "l                      c               r",
       "l                                      r",
-      "l                            c         r",
+      "l                                      r",
+      "4ttttttttttttttttttttttttttttttttttttttr",
+      "ewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwr",
+      "l                                      r",
+      "l   cccccccccccccccccccccccccccccccc   r",
+      "l                                      r",
+      "l   cccccccccccccccccccccccccccccccc   r",
+      "l                                      r",
       "l                                      r",
       "attttttttttttttttttttttttttttttttttttttb",
       "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
@@ -146,7 +162,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
    * Sprites
    */
   const player = add([
-    pos(map.getPos(6, 6)),
+    pos(map.getPos(11, 11)),
     sprite(HERO, { anim: "idle" }),
     area({ width: 12, height: 12, offset: vec2(0, 6) }),
     solid(),
@@ -166,7 +182,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const oldman = add([
     OLDMAN,
     sprite(OLDMAN),
-    pos(map.getPos(8, 8)),
+    pos(map.getPos(30, 12)),
     origin("bot"),
     area(),
     solid(),
@@ -176,7 +192,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const oldman2 = add([
     OLDMAN2,
     sprite(OLDMAN2),
-    pos(map.getPos(8, 6)),
+    pos(map.getPos(8, 20)),
     origin("bot"),
     area(),
     solid(),
@@ -196,7 +212,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const ogre = add([
     "ogre",
     sprite("ogre"),
-    pos(map.getPos(6, 4)),
+    pos(map.getPos(6, 14)),
     origin("bot"),
     area({ scale: 0.5 }),
     solid(),
@@ -205,7 +221,17 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const monster = add([
     "monster",
     sprite("monster", { anim: "run" }),
-    pos(map.getPos(4, 8)),
+    pos(map.getPos(4, 7)),
+    origin("bot"),
+    patrol(100),
+    area({ scale: 0.5 }),
+    solid(),
+  ]);
+
+  const monster2 = add([
+    "monster",
+    sprite("monster", { anim: "run" }),
+    pos(map.getPos(24, 9)),
     origin("bot"),
     patrol(100),
     area({ scale: 0.5 }),
@@ -444,6 +470,8 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
         } else {
           c.play("open");
           c.opened = true;
+          counter.value += 500;
+          counter.text = `Score: ${counter.value}`;
         }
         interacted = true;
       }
