@@ -1,15 +1,10 @@
-import {
-  NETWORK_URL,
-  PROGRAM_ID,
-  TW_COLLECTION_ADDRESS,
-} from "@/utils/constants";
+import { PROGRAM_ID } from "@/utils/constants";
 import { Dungeon3, IDL } from "@/utils/idl";
 import { BN, Program } from "@project-serum/anchor";
 import { useWallet } from "@solana/wallet-adapter-react";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { PublicKey } from "@solana/web3.js";
-import { NFTDrop, ThirdwebSDK } from "@thirdweb-dev/sdk/solana";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import useTw from "./tw";
 
 export type SetUserAnchor = (
@@ -23,6 +18,7 @@ export default function useProgram() {
   const [program, setProgram] = useState<Program<Dungeon3>>();
 
   useEffect(() => {
+    // Load program when sdk is defined
     load();
     async function load() {
       if (sdk) {
@@ -37,6 +33,7 @@ export default function useProgram() {
     try {
       if (!program || !wallet.publicKey) return;
 
+      // Find user account. PDA
       const [userAccountAddress] = await PublicKey.findProgramAddress(
         [Buffer.from("user"), wallet.publicKey.toBuffer()],
         PROGRAM_ID
@@ -61,6 +58,7 @@ export default function useProgram() {
     try {
       if (!program || !wallet.publicKey) return;
 
+      // Find user account. PDA
       const [userAccountAddress] = await PublicKey.findProgramAddress(
         [Buffer.from("user"), wallet.publicKey.toBuffer()],
         PROGRAM_ID

@@ -29,12 +29,11 @@ export default function MintPage() {
   const mint = async () => {
     if (!nftDrop || !wallet.publicKey) return;
     try {
-      const nfts = await nftDrop.getAll();
-      console.log(nfts);
-
+      // Claim 1 NFT
       const claimedAddresses = await nftDrop.claim(1);
       console.log("Claimed NFT to: ", claimedAddresses[0]);
 
+      // Initialize user account
       await initUserAnchor();
 
       navigate("/");

@@ -9,6 +9,7 @@ export default function useTw() {
   const [nftDrop, setNftDrop] = useState<NFTDrop>();
   const [hasNft, setHasNft] = useState(false);
 
+  // Initialize sdk with wallet when wallet is connected
   const sdk = useMemo(() => {
     if (wallet.connected) {
       const sdk = ThirdwebSDK.fromNetwork(NETWORK_URL);
@@ -16,7 +17,8 @@ export default function useTw() {
       return sdk;
     }
   }, [wallet]);
-
+  
+  // Initialize collection drop program when sdk is defined
   useEffect(() => {
     async function load() {
       if (sdk) {
