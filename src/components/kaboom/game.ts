@@ -1,13 +1,13 @@
+import { SetUserAnchor } from "@/hooks/anchor";
 import { KaboomCtx } from "kaboom";
 import {
+  HERO,
   OLDMAN,
   OLDMAN2,
   OLDMAN3,
-  HERO,
   SPEED,
   SWORD,
 } from "../../utils/constants";
-import { SetUserAnchor } from "@/hooks/anchor";
 
 export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const {
@@ -23,14 +23,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     onKeyDown,
     text,
     go,
-    shake,
-    layers,
-    layer,
     play,
-    wait,
-    opacity,
-    loadSpriteAtlas,
-    loadBean,
     addLevel,
     sprite,
     vec2,
@@ -38,24 +31,15 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     z,
     rotate,
     follow,
-    LEFT,
-    UP,
-    RIGHT,
-    DOWN,
     onKeyPress,
     every,
     dt,
     fixed,
-    isKeyPressed,
     onKeyRelease,
     rand,
-    loadSound,
-    loadSprite,
     camPos,
     camScale,
     scale,
-    debug,
-    scene,
     cursor,
   } = k;
 
@@ -394,7 +378,6 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   player.onCollide("ogre", async (obj, col) => {
     play("hit");
     reduceHealth();
-    // initUserAnchor();
   });
 
   player.onCollide("coin", async (obj, col) => {
@@ -402,7 +385,6 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     play("coin");
     counter.value += 10;
     counter.text = `Score: ${counter.value}`;
-    // initUserAnchor();
   });
 
   player.onCollide("monster", async (obj, col) => {
@@ -420,16 +402,13 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     }
     if (col?.displacement) play("hit");
     reduceHealth();
-    // initUserAnchor();
   });
 
-  // TODO: sword collide enemy
   sword.onCollide("ogre", async (ogre) => {
     play("kill");
     counter.value += 100;
     counter.text = `Score: ${counter.value}`;
     destroy(ogre);
-    // initUserAnchor();
   });
 
   player.onCollide(OLDMAN, (obj) => {
@@ -444,17 +423,9 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     dialog.say(obj.msg);
   });
 
-  // player.onUpdate(() => {
-  //   collides("")
-  //   if (player.isColliding(ogre)) {
-  //     console.log("cllide");
-  //   }
-  // });
-
   /**
    * Player Controls
    */
-
   camScale(vec2(2));
   player.onUpdate(() => {
     camPos(player.pos);

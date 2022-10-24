@@ -1,8 +1,8 @@
-import { KaboomCtx } from "kaboom";
-import { Home } from "./home";
-import { Game } from "./game";
-import { OLDMAN, OLDMAN2, OLDMAN3 } from "../../utils/constants";
 import { SetUserAnchor } from "@/hooks/anchor";
+import { KaboomCtx } from "kaboom";
+import { OLDMAN, OLDMAN2, OLDMAN3 } from "../../utils/constants";
+import { Game } from "./game";
+import { Home } from "./home";
 
 export const loadKaboom = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   const { go, loadSpriteAtlas, loadSound, loadSprite, play, scene } = k;

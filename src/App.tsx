@@ -1,10 +1,7 @@
 import { loadKaboom } from "@/components/kaboom";
-import { PROGRAM_ID } from "@/utils/constants";
-import { BN } from "@project-serum/anchor";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { PublicKey } from "@solana/web3.js";
 import kaboom from "kaboom";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,10 +9,10 @@ import useProgram from "./hooks/anchor";
 import useTw from "./hooks/tw";
 
 export default function Home() {
-  const wallet = useWallet();
-  const { hasNft } = useTw();
-  const { initUserAnchor, setUserAnchor } = useProgram();
-  const navigate = useNavigate();
+  // const wallet = useWallet();
+  // const { hasNft } = useTw();
+  // const navigate = useNavigate();
+  const { setUserAnchor } = useProgram();
 
   // useEffect(() => {
   //   if (!hasNft) {
@@ -47,8 +44,6 @@ export default function Home() {
         <div className="self-center">
           <h2 className="font-bold">Dungeon3</h2>
         </div>
-        <button onClick={initUserAnchor}>init</button>
-        <button onClick={() => setUserAnchor(123, 1)}>set</button>
         <WalletMultiButton className="btn btn-primary" />
       </div>
       <canvas
@@ -60,3 +55,5 @@ export default function Home() {
     </>
   );
 }
+
+
