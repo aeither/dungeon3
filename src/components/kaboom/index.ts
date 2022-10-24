@@ -5,7 +5,7 @@ import { OLDMAN, OLDMAN2, OLDMAN3 } from "../../utils/constants";
 import { SetUserAnchor } from "@/hooks/anchor";
 
 export const loadKaboom = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
-  const { go, loadSpriteAtlas, loadSound, loadSprite, center, scene } = k;
+  const { go, loadSpriteAtlas, loadSound, loadSprite, play, scene } = k;
 
   /**
    * Load Sprites and Sounds
@@ -42,12 +42,16 @@ export const loadKaboom = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     },
   });
 
-  // add([health()])
-
   loadSound("coin", "/assets/sounds/coin.wav");
   loadSound("hit", "/assets/sounds/hit.mp3");
   loadSound("wooosh", "/assets/sounds/wooosh.mp3");
   loadSound("kill", "/assets/sounds/kill.wav");
+
+  loadSound("dungeon", "/assets/sounds/dungeon.ogg");
+  const music = play("dungeon", {
+    volume: 0.2,
+    loop: true,
+  });
 
   scene("home", () => Home(k));
 
