@@ -349,8 +349,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     });
 
     btn.onClick(() => {
-      console.log("set: ", counter.value, health.frame),
-        setUserAnchor(counter.value, health.frame);
+      setUserAnchor(counter.value, health.frame);
     });
     bg.hidden = true;
     txt.hidden = true;
@@ -497,7 +496,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     player.move(0, SPEED);
   });
 
-  // Player animation while stationary and in motion 
+  // Player animation while stationary and in motion
   onKeyRelease(["left", "right", "up", "down"], () => {
     player.play("idle");
   });
