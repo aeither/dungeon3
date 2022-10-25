@@ -46,7 +46,8 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   /**
    * Map
    */
-  // floor
+
+  // map floor
   addLevel(
     [
       "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
@@ -82,6 +83,8 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
       " ": () => [sprite("floor", { frame: ~~rand(0, 8) })],
     }
   );
+
+  // map walls, enemies, items, coins...
   const map = addLevel(
     [
       "                                        ",
@@ -242,10 +245,12 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   /**
    * Logics
    */
+
+  // Spin the sword 360 degree
   function spin() {
     let spinning = false;
     return {
-      angle: 0, // add type for this.angle
+      angle: 0,
       id: "spin",
       update() {
         if (spinning) {
@@ -261,6 +266,9 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
       },
     };
   }
+
+  // Reduces the life of the player.
+  // Reset player stats and move to home if there is no life left.
   function reduceHealth() {
     switch (health.frame) {
       case 0:
@@ -278,6 +286,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     }
   }
 
+  // Make enemy to move left and right on collision
   function patrol(speed = 60, dir = 1) {
     return {
       on: (obj: any, col: any) => console.log(),
@@ -297,6 +306,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     };
   }
 
+  // Show a dialog box. The player can save their progress on-chain if accept.
   function addDialog() {
     const h = 160;
     const btnText = "Yes";
@@ -375,11 +385,14 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   /**
    * on Player Collides
    */
+
+  // Reduce the player life when collides with the ogre enemy
   player.onCollide("ogre", async (obj, col) => {
     play("hit");
     reduceHealth();
   });
 
+  // Increase the score when the player touch a coin. Make disappear the coin.
   player.onCollide("coin", async (obj, col) => {
     destroy(obj);
     play("coin");
@@ -387,6 +400,8 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     counter.text = `Score: ${counter.value}`;
   });
 
+  // Reduce the player life when collides with the monster enemy
+  // Move the player a fixed distance in the opposite direction of the collision.
   player.onCollide("monster", async (obj, col) => {
     if (col?.isRight()) {
       player.moveBy(-32, 0);
@@ -404,6 +419,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     reduceHealth();
   });
 
+  // When the sword collides with ogre, kill it and receive 100 coins.
   sword.onCollide("ogre", async (ogre) => {
     play("kill");
     counter.value += 100;
@@ -411,6 +427,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     destroy(ogre);
   });
 
+  // Start a dialog with the old man on contact.
   player.onCollide(OLDMAN, (obj) => {
     dialog.say(obj.msg);
   });
@@ -426,11 +443,15 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
   /**
    * Player Controls
    */
+
+  // Follow the player with the camera
   camScale(vec2(2));
   player.onUpdate(() => {
     camPos(player.pos);
   });
 
+  // Press space to spin the sword
+  // Open a chest if the player is touching it.
   onKeyPress("space", () => {
     let interacted = false;
     every("chest", (c) => {
@@ -453,6 +474,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     }
   });
 
+  // Player movement controls
   onKeyDown("right", () => {
     player.flipX(false);
     sword.flipX(false);
@@ -475,6 +497,7 @@ export const Game = (k: KaboomCtx, setUserAnchor: SetUserAnchor) => {
     player.move(0, SPEED);
   });
 
+  // Player animation while stationary and in motion 
   onKeyRelease(["left", "right", "up", "down"], () => {
     player.play("idle");
   });
