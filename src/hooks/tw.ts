@@ -6,18 +6,19 @@ import { useEffect, useMemo, useState } from "react";
 
 export default function useTw() {
   const wallet = useWallet();
+  const { publicKey } = wallet;
   const [nftDrop, setNftDrop] = useState<NFTDrop>();
-  const [hasNft, setHasNft] = useState(false);
+  const [hasNft, setHasNft] = useState(-1);
 
   // Initialize sdk with wallet when wallet is connected
   const sdk = useMemo(() => {
-    if (wallet.connected) {
+    if (publicKey) {
       const sdk = ThirdwebSDK.fromNetwork(NETWORK_URL);
       sdk.wallet.connect(wallet);
       return sdk;
     }
-  }, [wallet]);
-  
+  }, [publicKey]);
+
   // Initialize collection drop program when sdk is defined
   useEffect(() => {
     async function load() {
@@ -32,19 +33,22 @@ export default function useTw() {
   useEffect(() => {
     async function getHasNft() {
       try {
-        if (wallet.publicKey !== null && nftDrop !== undefined) {
+        if (publicKey !== null && nftDrop !== undefined) {
           const nfts = await nftDrop.getAllClaimed();
-          const userAddress = wallet.publicKey.toBase58();
+          const userAddress = publicKey.toBase58();
           const hasNFT = nfts.some((nft) => nft.owner === userAddress);
-          if (hasNFT === undefined) return;
-          setHasNft(hasNFT);
+          if (hasNFT === undefined) {
+            setHasNft(0);
+          } else {
+            setHasNft(1);
+          }
         }
       } catch (error) {
         console.error(error);
       }
     }
     getHasNft();
-  }, [wallet, nftDrop]);
+  }, [publicKey, nftDrop]);
 
   return {
     sdk,

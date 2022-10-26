@@ -1,5 +1,4 @@
 import { loadKaboom } from "@/components/kaboom";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import kaboom from "kaboom";
@@ -9,17 +8,19 @@ import useProgram from "./hooks/anchor";
 import useTw from "./hooks/tw";
 
 export default function Home() {
-  // const wallet = useWallet();
-  // const { hasNft } = useTw();
-  // const navigate = useNavigate();
-  const { setUserAnchor } = useProgram();
+  const { hasNft } = useTw();
+  const navigate = useNavigate();
+  const { setUserAnchor, program } = useProgram();
 
-  // useEffect(() => {
-  //   if (!hasNft) {
-  //     navigate("/mint");
-  //   }
-  // }, [wallet]);
+  // Check if the user has the nft.
+  // Go to the mint page if the user hasn't.
+  useEffect(() => {
+    if (hasNft === 0) {
+      navigate("/mint");
+    }
+  }, [hasNft]);
 
+  // Get the canvas where we are going to load the game.
   const canvasRef = useRef(
     document.getElementById("canvas") as HTMLCanvasElement
   );
@@ -36,7 +37,7 @@ export default function Home() {
     });
 
     loadKaboom(k, setUserAnchor);
-  }, []);
+  }, [program]);
 
   return (
     <>
@@ -55,5 +56,3 @@ export default function Home() {
     </>
   );
 }
-
-

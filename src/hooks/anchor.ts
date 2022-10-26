@@ -81,6 +81,7 @@ export default function useProgram() {
   };
 
   return {
+    program,
     initUserAnchor,
     setUserAnchor,
   };

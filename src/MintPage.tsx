@@ -7,27 +7,23 @@ import useProgram from "./hooks/anchor";
 import useTw from "./hooks/tw";
 
 export default function MintPage() {
-  const wallet = useWallet();
+  const { publicKey } = useWallet();
   const navigate = useNavigate();
-  const { nftDrop } = useTw();
+  const { nftDrop, hasNft } = useTw();
   const { initUserAnchor } = useProgram();
 
+  /**
+   * Check if the wallet has NFT
+   * Go to the game page if we find it.
+   */
   useEffect(() => {
-    async function f() {
-      if (!nftDrop || !wallet.publicKey) return;
-      const nfts = await nftDrop.getAllClaimed();
-      const userAddress = wallet.publicKey.toBase58();
-      const hasNft = nfts.some((nft) => nft.owner === userAddress);
-      if (hasNft) {
-        navigate("/");
-      }
+    if (hasNft === 1) {
+      navigate("/");
     }
-
-    f();
-  }, [wallet]);
+  }, [hasNft]);
 
   const mint = async () => {
-    if (!nftDrop || !wallet.publicKey) return;
+    if (!nftDrop || !publicKey) return;
     try {
       // Claim 1 NFT
       const claimedAddresses = await nftDrop.claim(1);
