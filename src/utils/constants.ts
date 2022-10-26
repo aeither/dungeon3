@@ -12,6 +12,4 @@ export const SWORD = "sword2";
 export const PROGRAM_ID = new PublicKey(import.meta.env.VITE_PROGRAM_ID || "");
 export const TW_COLLECTION_ADDRESS =
   import.meta.env.VITE_TW_COLLECTION_ADDRESS || "";
-export const NETWORK_URL =
-  `https://solana-devnet.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API}` ||
-  "devnet";
+export const NETWORK_URL = import.meta.env.VITE_RPC_URL || "";
